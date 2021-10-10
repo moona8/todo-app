@@ -5,6 +5,9 @@ import edit from "../src/assets/edit.png";
 import Input from "./components/input";
 import Button from "./components/button";
 import Delall from "./components/delall"
+import Edit from "./components/edit";
+import Item from "./components/item";
+import { findAllInRenderedTree } from "react-dom/test-utils";
 
 const App = () => {
   const [inputValue, setInputValue] = useState("");
@@ -19,22 +22,53 @@ const App = () => {
 
 
   const add=() =>{
-    const items=[{
+    
+    const items={
       user:user,
       pass:pass
-    }]
-    // const arr=[items]
-    const data =JSON.stringify(items)
-    localStorage.setItem("data",data)
+    }
+    if (localStorage.getItem('data')==null){
+      localStorage.setItem('data',JSON.stringify([items]))
+    }
+    else{
+
+      const old_val=JSON.parse(localStorage.getItem('data'))
+    
+      old_val.push(items)
+      localStorage.setItem('data',JSON.stringify(old_val))
+    }
+
   }
+
+
   const get=()=>{
-  const getData=localStorage.getItem("data")
-  console.log(JSON.parse(getData))
+    const item={
+      user:userIn,
+      pass:passIn
+    }
+    let arr =JSON.parse(localStorage.getItem('data'))
+    // Array.prototype.find(arr==item)
+    console.log(arr)
+   for (let i=0 ;i < arr.length; i++){
+    if(arr[i].user == item.user && arr[i].pass == item.pass){
+      setLogginStatus(true);
+      setUserIn('');
+      setPassIn('')
+      console.log('user found')
+    }
+   }
+   
   }
 
   const login = () => {
     setLogginStatus(true);
   };
+  // const signIn = () => {
+  //   setLogginStatus(true);
+  // };
+  // const signUp = () => {
+  //   setLogginStatus(true);
+  // };
 
   const logout = () => {
     setLogginStatus(false);
@@ -74,22 +108,8 @@ const App = () => {
 
   const items = todos.map((todos, index) =>
     editInd === index ? (
-      <li>
-        <input
-          alt=""
-          value={editVal}
-          onChange={(e) => setEditVal(e.target.value)}
-        />
-        <button
-          className="btn btn-outline-success mx-20 px-20"
-          onClick={() => {
-            updateTodos(index, editVal);
-          }}
-        >
-          {" "}
-          <img alt="" src={edit} />{" "}
-        </button>
-      </li>
+
+      <Edit editVal={editVal} edit={edit} index={index}  setEditVal={setEditVal} updateTodos={updateTodos} />
     ) : (
       <li className="list-group-item d-flex justify-content-between">
         {todos} {"  "}
@@ -127,8 +147,8 @@ const App = () => {
           <input type ="text" placeholder="Username" onChange={(e)=>{setUser(e.target.value)}}/><br/>
           <input type ="text"  placeholder="Password" onChange={(e)=>{setPass(e.target.value)}}/><br/>
           <button onClick={add}>SignUp</button><hr/>
-          <input type text placeholder="Username" onChange={(e)=>{setUserIn(e.target.value)}}/><br/>
-          <input type text placeholder="Password" onChange={(e)=>{setPassIn(e.target.value)}}/><br/>
+          <input type text placeholder="Username" value={userIn} onChange={(e)=>{setUserIn(e.target.value)}}/><br/>
+          <input type text placeholder="Password" value={passIn} onChange={(e)=>{setPassIn(e.target.value)}}/><br/>
           <button onClick={get}>SignIn</button>
           <button onClick={isLoggedIn ? logout : login}>
             {isLoggedIn === true ? "Logout" : "Login"}
@@ -160,6 +180,7 @@ const App = () => {
       </div>
     </div>
   );
+        
 };
 
 export default App;
