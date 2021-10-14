@@ -6,8 +6,9 @@ import Input from "./components/input";
 import Button from "./components/button";
 import Delall from "./components/delall"
 import Edit from "./components/edit";
-import Item from "./components/item";
-import { findAllInRenderedTree } from "react-dom/test-utils";
+// import Item from "./components/item";
+// import list from "./components/list"
+
 
 const App = () => {
   const [inputValue, setInputValue] = useState("");
@@ -60,15 +61,7 @@ const App = () => {
    
   }
 
-  const login = () => {
-    setLogginStatus(true);
-  };
-  // const signIn = () => {
-  //   setLogginStatus(true);
-  // };
-  // const signUp = () => {
-  //   setLogginStatus(true);
-  // };
+
 
   const logout = () => {
     setLogginStatus(false);
@@ -79,9 +72,10 @@ const App = () => {
   };
 
   const addTodo = () => {
-    updateTodo([...todos, inputValue]);
-    setInputValue("");
-  };
+    const newTodo = {
+      text: inputValue,
+      isCompleted: false
+    }}
 
   const removeTodo = (index) => {
     const newTodos = [...todos];
@@ -105,6 +99,12 @@ const App = () => {
     setEditInd("10000");
     setEditVal("");
   };
+  const markAsComplete = (index) => {
+    const newTodos = [...todos];
+    const oldValue = newTodos[index].isCompleted;
+    newTodos[index].isCompleted = !oldValue
+    updateTodo(newTodos)
+  }
 
   const items = todos.map((todos, index) =>
     editInd === index ? (
@@ -134,9 +134,11 @@ const App = () => {
           </button>
         </p>
       </li>
+      
     )
   );
-
+  const completedStyle = { textDecoration: "line-through" }
+  const style = {}  
   return (
     <div className="container  ">
       <br />
@@ -166,7 +168,10 @@ const App = () => {
             <Button addTodo={addTodo} />
             </div>
           </div>
-          <ul className="list-group list-group-flush">{items}</ul>
+          <p style={ todo.isCompleted ? completedStyle : style}>
+      <span style={{ color: 'lightgray' ,marginLeft: 20, marginRight: 20}}>{index  + 1}</span>
+      <span onClick={() => { markAsComplete(index)}}>{todo.text}</span>
+          <ul className="list-group list-group-flush">{items}</ul></p>
           <br />
           <br />
           <br />
